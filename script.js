@@ -112,6 +112,10 @@ form.addEventListener("submit", e => {
   adicionarTarefa(input.value);
 });
 
+// Clique no botão + também adiciona a tarefa
+const btnAdd = document.getElementById("btn-add");
+btnAdd.addEventListener("click", () => adicionarTarefa(input.value));
+
 filtros.forEach(btn => {
   btn.addEventListener("click", () => {
     filtros.forEach(b => b.classList.remove("active"));
