@@ -1,60 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToDo List</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Minha To-do List</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    body { font-family: Arial; max-width: 500px; margin: 40px auto; }
-    input, button { padding: 8px; margin: 5px; }
-    li { margin: 6px 0; }
-    .done { text-decoration: line-through; color: gray; }
+    :root {
+      --accent: #3b82f6;
+      --muted: #6b7280;
+      --bg: #f9fafb;
+      --card: #fff;
+    }
+
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      background: var(--bg);
+      color: #111;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 20px;
+    }
+
+    .new-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    li.completed span {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .meta {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter.active {
+      color: var(--accent);
+      font-weight: bold;
+    }
   </style>
 </head>
+
 <body>
-  <h1> Minha ToDo List</h1>
-  <input id="titulo" placeholder="Nova tarefa..." />
-  <button onclick="adicionarTarefa()">Adicionar</button>
-  <ul id="lista"></ul>
+  <div class="container">
+    <header>
+      <div class="icon" style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff">TL</div>
+      <div>
+        <h1>Lista de Tarefas</h1>
+        <div style="color:var(--muted);font-size:0.9rem">Adicione, edite e conclua suas tarefas.</div>
+      </div>
+    </header>
 
-  <script>
-    const API_URL = 'https://api-todolist-846s.onrender.com/';
+    <div class="card">
+      <form id="form-tarefa" class="new-form">
+        <input id="tarefa" type="text" placeholder="O que você quer fazer?" autocomplete="off">
+        <button type="submit">+</button>
+      </form>
 
-    async function carregarTarefas() {
-      const res = await fetch(API_URL);
-      const tarefas = await res.json();
-      const lista = document.getElementById('lista');
-      lista.innerHTML = '';
-      tarefas.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t.titulo;
-        if (t.concluida) li.classList.add('done');
-        li.onclick = () => atualizarTarefa(t.id, !t.concluida);
-        lista.appendChild(li);
-      });
-    }
+      <ul id="lista-tarefas"></ul>
 
-    async function adicionarTarefa() {
-      const titulo = document.getElementById('titulo').value;
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ titulo })
-      });
-      document.getElementById('titulo').value = '';
-      carregarTarefas();
-    }
+      <div class="meta">
+        <div id="contador">0 tarefas</div>
+        <div class="filters">
+          <button class="filter active" data-filter="todas">Todas</button>
+          <button class="filter" data-filter="ativas">Ativas</button>
+          <button class="filter" data-filter="concluidas">Concluídas</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    async function atualizarTarefa(id, concluida) {
-      await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concluida })
-      });
-      carregarTarefas();
-    }
-
-    carregarTarefas();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
