@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToDo List</title>
+  <style>
+    body { font-family: Arial; max-width: 500px; margin: 40px auto; }
+    input, button { padding: 8px; margin: 5px; }
+    li { margin: 6px 0; }
+    .done { text-decoration: line-through; color: gray; }
+  </style>
+</head>
+<body>
+  <h1> Minha ToDo List</h1>
+  <input id="titulo" placeholder="Nova tarefa..." />
+  <button onclick="adicionarTarefa()">Adicionar</button>
+  <ul id="lista"></ul>
+
+  <script>
+    const API_URL = 'https://api-todolist-846s.onrender.com/';
+
+    async function carregarTarefas() {
+      const res = await fetch(API_URL);
+      const tarefas = await res.json();
+      const lista = document.getElementById('lista');
+      lista.innerHTML = '';
+      tarefas.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t.titulo;
+        if (t.concluida) li.classList.add('done');
+        li.onclick = () => atualizarTarefa(t.id, !t.concluida);
+        lista.appendChild(li);
+      });
+    }
+
+    async function adicionarTarefa() {
+      const titulo = document.getElementById('titulo').value;
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ titulo })
+      });
+      document.getElementById('titulo').value = '';
+      carregarTarefas();
+    }
+
+    async function atualizarTarefa(id, concluida) {
+      await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ concluida })
+      });
+      carregarTarefas();
+    }
+
+    carregarTarefas();
+  </script>
+</body>
+</html>
