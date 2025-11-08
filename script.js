@@ -1,5 +1,5 @@
 
-const BASE_URL = "https://todolist-frontend-phom.onrender.com/";
+const BASE_URL = "https://api-todolist-846s.onrender.com";
 
 const form = document.getElementById("form-tarefa");
 const input = document.getElementById("tarefa");
